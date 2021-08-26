@@ -56,9 +56,29 @@ function toggleOpenFolder(name: string) {
     }
 }
 
+function focusPage(page: Page) {
+    console.log("implement!")
+}
+
 function openPage(item: Page) {
     console.log("Implement!");
-    // if (document.getElementById())
+    const tabId = `${item.name}-tab`;
+    const closeId = `${item.name}-close`;
+    const tab = document.getElementById(tabId);
+    if (tab !== null) {
+        focusPage(item);
+    } else {
+        document.getElementById('tabs')!.innerHTML += `
+            <button id="${tabId}">
+                <i class="${item.icon}" style="color:${item.color}; width:1em"></i>
+                ${item.name}
+                <i class="fas fa-times fa-xs close-button" id="${closeId}"></i>
+            </button> 
+        `
+        document.getElementById(closeId)!.addEventListener("click", () => {
+            document.getElementById(tabId)!.remove();
+        })
+    }
 }
 
 let currentlyActiveButton: HTMLElement;

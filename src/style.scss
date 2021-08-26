@@ -3,6 +3,7 @@ $medium-gray: #3B4252;
 $light-gray: #434C5E;
 $bright-gray: #4C566A;
 $white-text:#ECEFF4;
+$damp: #D8DEE9;
 $blue: #5E81AC;
 $red: #BF616A;
 $orange: #D08770;
@@ -19,6 +20,10 @@ $pink: #B48EAD;
     background-color: $dark-gray;
     color: $white-text;
     font-family: "iosevka";
+}
+
+@mixin top-row {
+    height: 2.5em;
 }
 
 body {
@@ -49,6 +54,12 @@ button {
     width: 20vw;
 }
 
+#name {
+    @include top-row;
+    display: flex;
+    align-items: center;
+}
+
 #explorer {
     margin-top: 2vh;
     button {
@@ -56,7 +67,7 @@ button {
         text-align: left;
     }
     button:hover {
-        background-color: $light-gray;
+        background-color: $bright-gray;
     }
     button.active {
         background-color: $blue;
@@ -71,7 +82,24 @@ button {
 }
 
 #tabs {
-    overflow-x: scroll;
+    @include top-row;
+    overflow-x: auto;
+    button {
+        // min-width: 20%;
+        height: 100%;
+    }
+    button:hover {
+        background-color: $bright-gray;
+    }
+}
+
+.close-button {
+    color: $damp;
+    margin-left: 4em;
+}
+
+.close-button:hover {
+    color:$red
 }
 
 
