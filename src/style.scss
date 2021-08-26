@@ -26,8 +26,16 @@ $pink: #B48EAD;
     height: 2.5em;
 }
 
+html, body {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
 body {
     @include theme;
+    height: 100vh;
 }
 
 main {
@@ -112,10 +120,15 @@ button {
 #editor {
     padding: 2em;
     height: 100%;
+    background-color: $light-gray;
 }
 
-#editor.active {
-    background-color: $light-gray;
+#editor.inactive {
+    background-color: $dark-gray;
+    display: flex;
+    justify-content: center;
+    align-items: center; 
+    align-self: center;
 }
 
 
