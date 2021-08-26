@@ -67,7 +67,7 @@ button {
         text-align: left;
     }
     button:hover {
-        background-color: $bright-gray;
+        background-color: $medium-gray;
     }
     button.active {
         background-color: $blue;
@@ -87,9 +87,14 @@ button {
     button {
         // min-width: 20%;
         height: 100%;
+        padding-left: 1em;
+        padding-right: 1em;
     }
     button:hover {
-        background-color: $bright-gray;
+        background-color: $medium-gray;
+    }
+    button.active {
+        background-color: $light-gray;
     }
 }
 
@@ -100,6 +105,15 @@ button {
 
 .close-button:hover {
     color:$red
+}
+
+#editor {
+    padding: 2em;
+    height: 100%;
+}
+
+#editor.active {
+    background-color: $light-gray;
 }
 
 

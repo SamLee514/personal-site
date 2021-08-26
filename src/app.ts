@@ -31,17 +31,26 @@ async function getContent(): Promise<(Page|Folder)[]> {
                     name: "projects",
                     icon: "fas fa-tools",
                     color: YELLOW,
-                    innerHTML: await processMarkdown("public/content/test.md")
+                    innerHTML: await processMarkdown("public/content/projects.md")
                 }
             ]
         },
     ]
 }
 
-function makeExclusivelyActive(button: HTMLElement) {
-    currentlyActiveButton.classList.remove("active");
-    button.classList.add("active");
-    currentlyActiveButton = button;
+const startingItemIndex = 0;
+
+function makeExclusivelyActive(name: string) {
+    document.getElementById(`${currentlyActiveItemName}-explorer`)!.classList.remove("active");
+    document.getElementById(`${name}-explorer`)!.classList.add("active");
+
+    const tab = document.getElementById(`${currentlyActiveItemName}-tab`);
+    if (tab !== null) {
+        tab!.classList.remove("active");
+    }
+    document.getElementById(`${name}-tab`)!.classList.add("active");
+
+    currentlyActiveItemName = name;
 }
 
 function toggleOpenFolder(name: string) {
@@ -70,10 +79,12 @@ function openPage(item: Page) {
             </button> 
         `
     }
-    document.getElementById("editor")!.innerHTML = item.innerHTML;
+    const editor = document.getElementById("editor")! 
+    editor.innerHTML = item.innerHTML;
+    editor.classList.toggle("active");
 }
 
-let currentlyActiveButton: HTMLElement;
+let currentlyActiveItemName: string;
 
 async function fillHTML(element: HTMLElement, items: (Page|Folder)[]) {
     // Set up all explorer buttons
@@ -103,12 +114,12 @@ async function fillHTML(element: HTMLElement, items: (Page|Folder)[]) {
     items.forEach(item => {
         document.getElementById(`${item.name}-explorer`)!.addEventListener("click", function (this: HTMLElement, e: MouseEvent) {
             e.preventDefault();
-            makeExclusivelyActive(this);
             if (isPage(item)) {
                 openPage(item);
             } else {
                 toggleOpenFolder(item.name);
             }
+            makeExclusivelyActive(item.name);
         });
     })
     
@@ -117,8 +128,9 @@ async function fillHTML(element: HTMLElement, items: (Page|Folder)[]) {
 async function main() {
     const content = await getContent();
     fillHTML(document.getElementById("explorer")!, content);
-    currentlyActiveButton = document.getElementById("about-explorer")!;
-    makeExclusivelyActive(currentlyActiveButton);
+    currentlyActiveItemName = "about";
+    openPage(content[startingItemIndex] as Page);
+    makeExclusivelyActive(currentlyActiveItemName);
     // document.getElementById(`_about`)!.addEventListener("click", function (this: HTMLElement, e: MouseEvent) {
     //     e.preventDefault();
     //     console.log(this);
