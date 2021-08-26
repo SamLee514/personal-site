@@ -56,18 +56,12 @@ function toggleOpenFolder(name: string) {
     }
 }
 
-function focusPage(page: Page) {
-    console.log("implement!")
-}
-
 function openPage(item: Page) {
     console.log("Implement!");
     const tabId = `${item.name}-tab`;
     const closeId = `${item.name}-close`;
     const tab = document.getElementById(tabId);
-    if (tab !== null) {
-        focusPage(item);
-    } else {
+    if (tab === null) {
         document.getElementById('tabs')!.innerHTML += `
             <button id="${tabId}">
                 <i class="${item.icon}" style="color:${item.color}; width:1em"></i>
@@ -75,11 +69,8 @@ function openPage(item: Page) {
                 <i class="fas fa-times fa-xs close-button" id="${closeId}" onclick="document.getElementById('${tabId}').remove();"></i>
             </button> 
         `
-        // document.getElementById(closeId)!.addEventListener("click", function (this: HTMLElement, e: MouseEvent) {
-        //     document.getElementById(tabId)!.remove();
-        // })
-
     }
+    document.getElementById("editor")!.innerHTML = item.innerHTML;
 }
 
 let currentlyActiveButton: HTMLElement;
