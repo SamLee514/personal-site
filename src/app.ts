@@ -35,29 +35,8 @@ async function getContent(): Promise<(Page|Folder)[]> {
                 }
             ]
         },
-        // {
-        //     name: "about",
-        //     icon: "fas fa-portrait",
-        //     color: GREEN,
-        //     innerHTML: await processMarkdown("public/content/test.md") 
-        // },
     ]
 }
-
-function openPage() {
-    console.log("Implement!");
-}
-
-// function toggleOpenFolder(button: HTMLElement) {
-//     // console.log("Implement!");
-//     if (button.classList.contains("active")) {
-
-//     }
-//     button.innerHTML =  `
-//         <i class="fas fa-chevron-right" style="color:#4C566A; width:1em"></i>
-//         ${item.name}
-//     `
-// }
 
 function makeExclusivelyActive(button: HTMLElement) {
     currentlyActiveButton.classList.remove("active");
@@ -66,14 +45,20 @@ function makeExclusivelyActive(button: HTMLElement) {
 }
 
 function toggleOpenFolder(name: string) {
-    const contents = document.getElementById(`_${name}-contents`)!;
+    const contents = document.getElementById(`${name}-accordion`)!;
+    const id = `${name}-icon`
     if (contents.style.maxHeight !== "0px") {
-        document.getElementById(`_${name}-icon`)!.className = "fas fa-chevron-right";
+        document.getElementById(id)!.className = "fas fa-chevron-right";
         contents.style.maxHeight = "0px";
     } else {
-        document.getElementById(`_${name}-icon`)!.className = "fas fa-chevron-down";
+        document.getElementById(id)!.className = "fas fa-chevron-down";
         contents.style.maxHeight = `${contents.scrollHeight}px`;
     }
+}
+
+function openPage(item: Page) {
+    console.log("Implement!");
+    // if (document.getElementById())
 }
 
 let currentlyActiveButton: HTMLElement;
@@ -81,30 +66,34 @@ let currentlyActiveButton: HTMLElement;
 async function fillHTML(element: HTMLElement, items: (Page|Folder)[]) {
     // Set up all explorer buttons
     items.forEach(item => {
+        const buttonId = `${item.name}-explorer`;
         if (isPage(item)) {
             element.innerHTML += `
-                <button id="_${item.name}">
+                <button id="${buttonId}">
                     <i class="${item.icon}" style="color:${item.color}; width:1em"></i>
                     ${item.name}
                 </button>
             `
         } else {
+            const iconId = `${item.name}-icon`;
+            const accordionId = `${item.name}-accordion`;
             element.innerHTML += `
-                <button id="_${item.name}">
-                    <i id="_${item.name}-icon" class="fas fa-chevron-right" style="color:${DAMP}; width:1em"></i>
+                <button id="${buttonId}">
+                    <i id="${iconId}" class="fas fa-chevron-right" style="color:${DAMP}; width:1em"></i>
                     ${item.name}
                 </button>
-                <div id="_${item.name}-contents" class="folder-contents" style="max-height:0px;overflow:hidden;"></div>
+                <div id="${accordionId}" class="folder-contents" style="max-height:0px;overflow:hidden;"></div>
             `
-            fillHTML(document.getElementById(`_${item.name}-contents`)!, item.subDocs);
+            fillHTML(document.getElementById(`${accordionId}`)!, item.subDocs);
         }
     });
     // Add event listeners to explorer buttons
     items.forEach(item => {
-        document.getElementById(`_${item.name}`)!.addEventListener("click", function (this: HTMLElement, e: MouseEvent) {
+        document.getElementById(`${item.name}-explorer`)!.addEventListener("click", function (this: HTMLElement, e: MouseEvent) {
             e.preventDefault();
             makeExclusivelyActive(this);
             if (isPage(item)) {
+                openPage(item);
             } else {
                 toggleOpenFolder(item.name);
             }
@@ -116,7 +105,7 @@ async function fillHTML(element: HTMLElement, items: (Page|Folder)[]) {
 async function main() {
     const content = await getContent();
     fillHTML(document.getElementById("explorer")!, content);
-    currentlyActiveButton = document.getElementById("_about")!;
+    currentlyActiveButton = document.getElementById("about-explorer")!;
     makeExclusivelyActive(currentlyActiveButton);
     // document.getElementById(`_about`)!.addEventListener("click", function (this: HTMLElement, e: MouseEvent) {
     //     e.preventDefault();
