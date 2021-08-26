@@ -84,12 +84,14 @@ button {
 #tabs {
     @include top-row;
     overflow-x: auto;
+    display: flex;
+    
     button {
         // min-width: 20%;
         height: 100%;
         padding-left: 1em;
         padding-right: 1em;
-    }
+     }
     button:hover {
         background-color: $medium-gray;
     }
