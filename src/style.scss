@@ -1,0 +1,67 @@
+$dark-gray:#2E3440;
+$medium-gray: #3B4252;
+$light-gray: #434C5E;
+$bright-gray: #4C566A;
+$white-text:#ECEFF4;
+
+@font-face {
+    font-family: "iosevka";
+    src: url("public/fonts/iosevka-regular.woff2");
+}
+
+@mixin theme {
+    background-color: $dark-gray;
+    color: $white-text;
+    font-family: "iosevka";
+}
+
+body {
+    @include theme;
+}
+
+main {
+    display: flex;
+    height: 100vh;
+}
+
+button {
+    @include theme;
+    cursor: pointer;
+    border: none;
+}
+
+.panel {
+    // margin-top: vh;
+    // color: blue;
+}
+
+#view {
+    width: 80vw;
+}
+
+#sidenav {
+    width: 20vw;
+}
+
+#explorer {
+    margin-top: 2vh;
+    button {
+        width: 100%;
+        text-align: left;
+    }
+    button:hover {
+        background-color: $light-gray;
+    }
+}
+
+.folder-contents {
+    transition: max-height 0.2s ease-in-out;
+    * {
+        padding-left: 1em;
+    }
+}
+
+// #explorer > 
+
+
+
