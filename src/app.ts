@@ -44,11 +44,14 @@ function makeExclusivelyActive(name: string) {
     document.getElementById(`${currentlyActiveItemName}-explorer`)!.classList.remove("active");
     document.getElementById(`${name}-explorer`)!.classList.add("active");
 
-    const tab = document.getElementById(`${currentlyActiveItemName}-tab`);
-    if (tab !== null) {
-        tab!.classList.remove("active");
+    const newTab = document.getElementById(`${name}-tab`);
+    const oldTab = document.getElementById(`${currentlyActiveItemName}-tab`);
+    if (newTab !== null) {
+        if (oldTab !== null) {
+            oldTab!.classList.remove("active");
+        }
+        newTab!.classList.add("active");
     }
-    document.getElementById(`${name}-tab`)!.classList.add("active");
 
     currentlyActiveItemName = name;
 }
@@ -81,7 +84,7 @@ function openPage(item: Page) {
     }
     const editor = document.getElementById("editor")! 
     editor.innerHTML = item.innerHTML;
-    editor.classList.toggle("active");
+    editor.classList.add("active");
 }
 
 let currentlyActiveItemName: string;
