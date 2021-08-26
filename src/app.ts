@@ -72,12 +72,13 @@ function openPage(item: Page) {
             <button id="${tabId}">
                 <i class="${item.icon}" style="color:${item.color}; width:1em"></i>
                 ${item.name}
-                <i class="fas fa-times fa-xs close-button" id="${closeId}"></i>
+                <i class="fas fa-times fa-xs close-button" id="${closeId}" onclick="document.getElementById('${tabId}').remove();"></i>
             </button> 
         `
-        document.getElementById(closeId)!.addEventListener("click", () => {
-            document.getElementById(tabId)!.remove();
-        })
+        // document.getElementById(closeId)!.addEventListener("click", function (this: HTMLElement, e: MouseEvent) {
+        //     document.getElementById(tabId)!.remove();
+        // })
+
     }
 }
 
