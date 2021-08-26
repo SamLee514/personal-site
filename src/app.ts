@@ -16,26 +16,28 @@ async function processMarkdown(url: string) {
     return window.marked(markdown);
 };
 
-async function getContent(): Promise<(Page|Folder)[]> {
-    return [
-        {
-            name: "about",
-            icon: "fas fa-portrait",
-            color: GREEN,
-            innerHTML: await processMarkdown("public/content/test.md") 
-        },
-        {
-            name: "my work",
-            subDocs: [
-                {
-                    name: "projects",
-                    icon: "fas fa-tools",
-                    color: YELLOW,
-                    innerHTML: await processMarkdown("public/content/projects.md")
-                }
-            ]
-        },
-    ]
+async function getContent(): Promise<Map<string, (Page|Folder)>> {
+    const content = new Map();
+    content.set("about", {
+        icon: "fas fa-portrait",
+        color: GREEN,
+        innerHTML: await processMarkdown("public/content/test.md") 
+    });
+    content.set("my work", {
+        subDocs: new Map([
+            ["projects", {
+                icon: "fas fa-tools",
+                color: YELLOW,
+                innerHTML: await processMarkdown("public/content/projects.md") 
+            }]
+        ]) 
+    });
+    content.set("resume", {
+        icon: "fas fa-file",
+        color: ORANGE,
+        innerHTML: await processMarkdown("public/content/resume.md") 
+    });
+    return content;
 }
 
 const startingItemIndex = 0;
@@ -68,16 +70,15 @@ function toggleOpenFolder(name: string) {
     }
 }
 
-function openPage(item: Page) {
-    console.log("Implement!");
-    const tabId = `${item.name}-tab`;
-    const closeId = `${item.name}-close`;
+function openPage(name: string, item: Page) {
+    const tabId = `${name}-tab`;
+    const closeId = `${name}-close`;
     const tab = document.getElementById(tabId);
     if (tab === null) {
         document.getElementById('tabs')!.innerHTML += `
             <button id="${tabId}">
                 <i class="${item.icon}" style="color:${item.color}; width:1em"></i>
-                ${item.name}
+                ${name}
                 <i class="fas fa-times fa-xs close-button" id="${closeId}" onclick="document.getElementById('${tabId}').remove();"></i>
             </button> 
         `
@@ -85,55 +86,68 @@ function openPage(item: Page) {
     const editor = document.getElementById("editor")! 
     editor.innerHTML = item.innerHTML;
     editor.classList.add("active");
-    makeExclusivelyActive(item.name);
+    makeExclusivelyActive(name);
 }
 
 let currentlyActiveItemName: string;
 
-async function fillHTML(element: HTMLElement, items: (Page|Folder)[]) {
-    // Set up all explorer buttons
-    items.forEach(item => {
-        const buttonId = `${item.name}-explorer`;
+async function fillHTML(container: HTMLElement, items: Map<string, (Page|Folder)>, keyPrefix: string | null) {
+    items.forEach((item, name) => {
+        const buttonId = `${name}-explorer`;
         if (isPage(item)) {
-            element.innerHTML += `
-                <button id="${buttonId}">
+            container.innerHTML += `
+                <button id="${buttonId}" name="${keyPrefix ? keyPrefix + '/' + name : name}">
                     <i class="${item.icon}" style="color:${item.color}; width:1em"></i>
-                    ${item.name}
+                    ${name}
                 </button>
             `
         } else {
-            const iconId = `${item.name}-icon`;
-            const accordionId = `${item.name}-accordion`;
-            element.innerHTML += `
-                <button id="${buttonId}">
+            const iconId = `${name}-icon`;
+            const accordionId = `${name}-accordion`;
+            container.innerHTML += `
+                <button id="${buttonId}" name="${name}">
                     <i id="${iconId}" class="fas fa-chevron-right" style="color:${DAMP}; width:1em"></i>
-                    ${item.name}
+                    ${name}
                 </button>
                 <div id="${accordionId}" class="folder-contents" style="max-height:0px;overflow:hidden;"></div>
             `
-            fillHTML(document.getElementById(`${accordionId}`)!, item.subDocs);
+            fillHTML(document.getElementById(`${accordionId}`)!, item.subDocs, name);
         }
     });
-    // Add event listeners to explorer buttons
-    items.forEach(item => {
-        document.getElementById(`${item.name}-explorer`)!.addEventListener("click", function (this: HTMLElement, e: MouseEvent) {
-            e.preventDefault();
-            if (isPage(item)) {
-                openPage(item);
-            } else {
-                toggleOpenFolder(item.name);
-            }
-            // makeExclusivelyActive(item.name);
-        });
-    })
-    
+}
+
+function deepAccess(content: Map<string, Page | Folder>, keys: string[]): Page | Folder {
+    if (keys.length === 1) {
+        return content.get(keys[0])!;
+    }
+    return deepAccess((content.get(keys[0])! as Folder).subDocs, keys.slice(1));
 }
 
 async function main() {
     const content = await getContent();
-    fillHTML(document.getElementById("explorer")!, content);
+    fillHTML(document.getElementById("explorer")!, content, null);
     currentlyActiveItemName = "about";
-    openPage(content[startingItemIndex] as Page);
+    openPage("about", content.get("about") as Page);
+
+    document.getElementById("explorer")!.addEventListener("click", function (this: HTMLElement, e: MouseEvent) {
+        e.preventDefault();
+        e.stopImmediatePropagation();
+        let element;
+        if ((e.target! as HTMLElement).tagName === "BUTTON") {
+            element = e.target!;
+        } else if ((e.target! as HTMLElement).parentElement!.tagName === "BUTTON") {
+            element = (e.target! as HTMLElement).parentElement!;
+        } else {
+            return;
+        }
+        const nameComponents = (element as HTMLElement).getAttribute("name")!.split('/');
+        const item = deepAccess(content, nameComponents)!;
+        if (isPage(item)) {
+            openPage(nameComponents[nameComponents.length - 1], item);
+        } else {
+            toggleOpenFolder(nameComponents[nameComponents.length - 1]);
+        }
+    });
 }
 
 main();
