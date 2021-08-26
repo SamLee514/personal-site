@@ -3,6 +3,12 @@ $medium-gray: #3B4252;
 $light-gray: #434C5E;
 $bright-gray: #4C566A;
 $white-text:#ECEFF4;
+$blue: #5E81AC;
+$red: #BF616A;
+$orange: #D08770;
+$yellow: #EBCB8B;
+$green: #A3BE8C;
+$pink: #B48EAD;
 
 @font-face {
     font-family: "iosevka";
@@ -51,6 +57,9 @@ button {
     }
     button:hover {
         background-color: $light-gray;
+    }
+    button.active {
+        background-color: $blue;
     }
 }
 

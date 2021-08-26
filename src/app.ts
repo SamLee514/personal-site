@@ -34,7 +34,13 @@ async function getContent(): Promise<(Page|Folder)[]> {
                     innerHTML: await processMarkdown("public/content/test.md")
                 }
             ]
-        }
+        },
+        // {
+        //     name: "about",
+        //     icon: "fas fa-portrait",
+        //     color: GREEN,
+        //     innerHTML: await processMarkdown("public/content/test.md") 
+        // },
     ]
 }
 
@@ -53,11 +59,31 @@ function openPage() {
 //     `
 // }
 
+function makeExclusivelyActive(button: HTMLElement) {
+    currentlyActiveButton.classList.remove("active");
+    button.classList.add("active");
+    currentlyActiveButton = button;
+}
+
+function toggleOpenFolder(name: string) {
+    const contents = document.getElementById(`_${name}-contents`)!;
+    if (contents.style.maxHeight !== "0px") {
+        document.getElementById(`_${name}-icon`)!.className = "fas fa-chevron-right";
+        contents.style.maxHeight = "0px";
+    } else {
+        document.getElementById(`_${name}-icon`)!.className = "fas fa-chevron-down";
+        contents.style.maxHeight = `${contents.scrollHeight}px`;
+    }
+}
+
+let currentlyActiveButton: HTMLElement;
+
 async function fillHTML(element: HTMLElement, items: (Page|Folder)[]) {
+    // Set up all explorer buttons
     items.forEach(item => {
         if (isPage(item)) {
             element.innerHTML += `
-                <button onClick="openPage()" id="_${item.name}">
+                <button id="_${item.name}">
                     <i class="${item.icon}" style="color:${item.color}; width:1em"></i>
                     ${item.name}
                 </button>
@@ -70,29 +96,33 @@ async function fillHTML(element: HTMLElement, items: (Page|Folder)[]) {
                 </button>
                 <div id="_${item.name}-contents" class="folder-contents" style="max-height:0px;overflow:hidden;"></div>
             `
-            document.getElementById(`_${item.name}`)!.addEventListener("click", function (this: HTMLElement, e: MouseEvent) {
-                e.preventDefault();
-                this.classList.toggle("active");
-                const contents = document.getElementById(`_${item.name}-contents`)!;
-                if (contents.style.maxHeight !== "0px") {
-                    console.log("!!!");
-                    document.getElementById(`_${item.name}-icon`)!.className = "fas fa-chevron-right";
-                    contents.style.maxHeight = "0px";
-                } else {
-                    console.log(contents.scrollHeight);
-                    document.getElementById(`_${item.name}-icon`)!.className = "fas fa-chevron-down";
-                    contents.style.maxHeight = `${contents.scrollHeight}px`;
-                }
-            })
             fillHTML(document.getElementById(`_${item.name}-contents`)!, item.subDocs);
         }
-        // explorer.innerHTML += page.innerHTML;
+    });
+    // Add event listeners to explorer buttons
+    items.forEach(item => {
+        document.getElementById(`_${item.name}`)!.addEventListener("click", function (this: HTMLElement, e: MouseEvent) {
+            e.preventDefault();
+            makeExclusivelyActive(this);
+            if (isPage(item)) {
+            } else {
+                toggleOpenFolder(item.name);
+            }
+        });
     })
+    
 }
 
 async function main() {
     const content = await getContent();
     fillHTML(document.getElementById("explorer")!, content);
+    currentlyActiveButton = document.getElementById("_about")!;
+    makeExclusivelyActive(currentlyActiveButton);
+    // document.getElementById(`_about`)!.addEventListener("click", function (this: HTMLElement, e: MouseEvent) {
+    //     e.preventDefault();
+    //     console.log(this);
+    //     makeExclusivelyActive(this);
+    // })
 }
 
 main();
