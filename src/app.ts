@@ -85,6 +85,7 @@ function openPage(item: Page) {
     const editor = document.getElementById("editor")! 
     editor.innerHTML = item.innerHTML;
     editor.classList.add("active");
+    makeExclusivelyActive(item.name);
 }
 
 let currentlyActiveItemName: string;
@@ -122,7 +123,7 @@ async function fillHTML(element: HTMLElement, items: (Page|Folder)[]) {
             } else {
                 toggleOpenFolder(item.name);
             }
-            makeExclusivelyActive(item.name);
+            // makeExclusivelyActive(item.name);
         });
     })
     
@@ -133,12 +134,6 @@ async function main() {
     fillHTML(document.getElementById("explorer")!, content);
     currentlyActiveItemName = "about";
     openPage(content[startingItemIndex] as Page);
-    makeExclusivelyActive(currentlyActiveItemName);
-    // document.getElementById(`_about`)!.addEventListener("click", function (this: HTMLElement, e: MouseEvent) {
-    //     e.preventDefault();
-    //     console.log(this);
-    //     makeExclusivelyActive(this);
-    // })
 }
 
 main();
