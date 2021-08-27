@@ -12,9 +12,8 @@ function isPage(item: Page | Folder): item is Page {
     return (item as Page).icon !== undefined;
 }
 
-async function processMarkdown(url: string) {
-    const markdown = await (await fetch(url)).text();
-    return window.marked(markdown);
+async function getInnerHTML(url: string) {
+    return await (await fetch(url)).text();
 };
 
 async function getContent(): Promise<Map<string, (Page|Folder)>> {
@@ -22,21 +21,21 @@ async function getContent(): Promise<Map<string, (Page|Folder)>> {
     content.set("about", {
         icon: "fas fa-portrait",
         color: GREEN,
-        innerHTML: await processMarkdown("public/content/test.md") 
+        innerHTML: await getInnerHTML("public/content/about.html") 
     });
     content.set("my-work", {
         subDocs: new Map([
             ["projects", {
                 icon: "fas fa-tools",
                 color: YELLOW,
-                innerHTML: await processMarkdown("public/content/projects.md") 
+                innerHTML: await getInnerHTML("public/content/projects.md") 
             }]
         ]) 
     });
     content.set("resume", {
         icon: "fas fa-file",
         color: ORANGE,
-        innerHTML: await processMarkdown("public/content/resume.md") 
+        innerHTML: await getInnerHTML("public/content/resume.md") 
     });
     return content;
 }

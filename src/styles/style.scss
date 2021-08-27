@@ -1,3 +1,5 @@
+@import "about";
+
 $dark-gray:#2E3440;
 $medium-gray: #3B4252;
 $light-gray: #434C5E;
@@ -191,8 +193,8 @@ button {
 
 #editor.wide {
     margin-left: -20vw;
-    width: 92vw;
-    padding: 0 0 0 8vw;
+    width: 86vw;
+    padding: 0 8vw 0 8vw;
     border-radius: 0;
     box-shadow: none;
 }
@@ -260,8 +262,8 @@ button {
 
     #editor.wide {
         margin-left: -30vw;
-        padding: 0 0 0 14vw;
-        width: 86vw;
+        padding: 0 10vw 0 14vw;
+        width: 76vw;
     }
 
     #tabs {
