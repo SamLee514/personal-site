@@ -62,14 +62,14 @@ button {
     height: 100%;
 }
 
-#sidenav {
+#side-nav {
     width: 20vw;
 }
 
 #drawer-button {
     position: absolute;
     left: -45px;
-    top: 38vh;
+    top: 34vh;
     padding-right: 5px;
     height: 20vh;
     width: 40px;
@@ -133,9 +133,18 @@ button {
     @include top-row;
     overflow-x: auto;
     display: flex;
+    width: 95.5%;
+    margin: 0px;
+
+    span {
+        margin-left: 10px;
+    }
     
     button {
         // min-width: 20%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
         height: 100%;
         padding-left: 1em;
         padding-right: 1em;
@@ -228,10 +237,51 @@ button {
 #attribution {
     display: flex;
     justify-content: center;
+    text-align: center;
     a {
         color: $white-text;
         text-decoration: none;
         margin-left: 7px;
+    }
+    flex-wrap: wrap;
+}
+
+@media only screen and (min-device-width: 320px) and (max-device-width: 480px) {
+    #side-nav {
+        width: 30vw;
+    }
+
+    #view {
+        width: 70vw;
+    }
+
+    #editor {
+        width: 80%;
+    }
+
+    #editor.wide {
+        margin-left: -30vw;
+        padding: 0 0 0 14vw; 
+    }
+
+    #tabs {
+        button {
+            width: 100px;
+            padding: 0;
+            .close-button {
+                margin-left: 40px;
+                font-size: 16px;
+            } 
+            span {
+                display: none;
+            }
+        }
+    }
+
+    #explorer {
+        button {
+            height: 50px;
+        }
     }
 }
 

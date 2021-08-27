@@ -79,7 +79,7 @@ function openPage(name: string, item: Page) {
         document.getElementById('tabs')!.innerHTML += `
             <button id="${tabId}" name=${name}>
                 <i class="${item.icon}" style="color:${item.color}; width:1em"></i>
-                ${name}
+                <span>${name}</span>
                 <i class="fas fa-times fa-xs close-button" id="${closeId}"></i>
             </button> 
         `
