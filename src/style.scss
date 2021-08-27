@@ -153,6 +153,19 @@ button {
         margin-left: 2vw;
         margin-right: 2vw;
     }
+    a {
+        text-decoration: none;
+        color: $damp;
+        width: 24px;
+        text-align: left;
+        i {
+            margin-left: 0px;
+        }
+        i:hover {
+            color: $yellow;
+            transform: scale(1.2);
+        }
+    }
 }
 
 
