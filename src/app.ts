@@ -187,6 +187,10 @@ async function main() {
             toggleOpenFolder(name);
         }
     });
+
+    document.getElementById("drawer-button")!.addEventListener("click", function (this: HTMLElement, e: MouseEvent) {
+        
+    })
 }
 
 main();
