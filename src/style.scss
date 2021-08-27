@@ -12,9 +12,9 @@ $green: #A3BE8C;
 $pink: #B48EAD;
 
 $top-height: 5vh;
-$mid-height: 88vh;
+$mid-height: 84vh;
 $bottom-height: 6vh;
-$squircliness: 4px;
+$squircliness: 6px;
 
 @font-face {
     font-family: "iosevka";
@@ -60,10 +60,39 @@ button {
 #view {
     width: 80vw;
     height: 100%;
+    position: relative;
+}
+
+#view.wide {
+
 }
 
 #sidenav {
     width: 20vw;
+}
+
+#drawer-button {
+    position: absolute;
+    left: -45px;
+    top: 38vh;
+    padding-right: 5px;
+    height: 20vh;
+    width: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: $medium-gray;
+    cursor: pointer;
+    border-top-left-radius: $squircliness;
+    border-bottom-left-radius: $squircliness;
+}
+
+#drawer-button.closed {
+    
+}
+
+#drawer-button:hover {
+    background-color: $bright-gray;
 }
 
 #name {
@@ -126,12 +155,15 @@ button {
 }
 
 #editor {
-    padding-left: 2.5vh;
-    padding-right: 2.5vh;
-    padding-bottom: 0px;
+    padding: 2.5vh;
+    padding-bottom: 0vh;
     height: $mid-height;
+    margin-right: 2vw;
+    margin-top: -0.7vh;
+    border-radius: $squircliness;
+    box-shadow: 8px 8px 8px rgb(0 0 0 / 0.7);
     background-color: $light-gray;
-    overflow: scroll;
+    overflow-y: auto;
 }
 
 #editor.inactive {
@@ -144,6 +176,7 @@ button {
 
 #footer {
     height: $bottom-height;
+    margin-top: 3vh;
     font-size: 12px;
     width: 100%;
     display: flex;
