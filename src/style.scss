@@ -60,11 +60,6 @@ button {
 #view {
     width: 80vw;
     height: 100%;
-    position: relative;
-}
-
-#view.wide {
-
 }
 
 #sidenav {
@@ -88,7 +83,11 @@ button {
 }
 
 #drawer-button.closed {
-    
+    border-radius: 0 $squircliness $squircliness 0;
+    left: 0;
+    * {
+        transform: rotate(180deg);
+    }
 }
 
 #drawer-button:hover {
@@ -99,7 +98,8 @@ button {
     @include top-row;
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: left;
+    padding-left: 2vw;
 }
 
 #explorer {
@@ -136,6 +136,7 @@ button {
         padding-right: 1em;
         border-top-right-radius: $squircliness;
         border-top-left-radius: $squircliness;
+        z-index: 1;
      }
     button:hover {
         background-color: $medium-gray;
@@ -156,14 +157,31 @@ button {
 
 #editor {
     padding: 2.5vh;
+    z-index: 10;
     padding-bottom: 0vh;
     height: $mid-height;
-    margin-right: 2vw;
+    width: 92%;
+    margin-left: 0;
     margin-top: -0.7vh;
     border-radius: $squircliness;
     box-shadow: 8px 8px 8px rgb(0 0 0 / 0.7);
     background-color: $light-gray;
-    overflow-y: auto;
+    position: relative;
+    transition: all 0.4s ease-out;
+ }
+
+#editor-content {
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+}
+
+#editor.wide {
+    margin-left: -20vw;
+    width: 92vw;
+    padding: 0 0 0 8vw;
+    border-radius: 0;
+    box-shadow: none;
 }
 
 #editor.inactive {
@@ -172,6 +190,7 @@ button {
     justify-content: center;
     align-items: center; 
     align-self: center;
+    box-shadow: none;
 }
 
 #footer {

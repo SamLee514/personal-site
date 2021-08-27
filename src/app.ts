@@ -84,7 +84,7 @@ function openPage(name: string, item: Page) {
             </button> 
         `
     }
-    const editor = document.getElementById("editor")! 
+    const editor = document.getElementById("editor-content")! 
     editor.innerHTML = item.innerHTML;
     editor.classList.remove("inactive");
     makeExclusivelyActive(name);
@@ -169,7 +169,7 @@ async function main() {
                     openPage(name, (deepAccess(content, name.split('/'))! as Page));;
                 } else {
                     document.getElementById(`${currentlyActiveItemName}-explorer`)!.classList.remove("active");
-                    const editor = document.getElementById("editor")!;
+                    const editor = document.getElementById("editor-content")!;
                     editor.innerHTML = `<i class="fas fa-smile-wink fa-10x" style="color:${GREY};"></i>`;
                     editor.classList.add("inactive");
                 }
@@ -189,7 +189,8 @@ async function main() {
     });
 
     document.getElementById("drawer-button")!.addEventListener("click", function (this: HTMLElement, e: MouseEvent) {
-        
+        document.getElementById("editor")!.classList.toggle("wide");
+        this.classList.toggle("closed");
     })
 }
 
