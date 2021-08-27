@@ -80,6 +80,11 @@ button {
     cursor: pointer;
     border-top-left-radius: $squircliness;
     border-bottom-left-radius: $squircliness;
+    transition: flippity 0.4s;
+    transition: all 0.4s ease-in;
+    * {
+        transition: all 0.4s ease-in-out;
+    }
 }
 
 #drawer-button.closed {
@@ -167,7 +172,7 @@ button {
     box-shadow: 8px 8px 8px rgb(0 0 0 / 0.7);
     background-color: $light-gray;
     position: relative;
-    transition: all 0.4s ease-out;
+    transition: all 0.4s ease-in;
  }
 
 #editor-content {
