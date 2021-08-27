@@ -21,21 +21,21 @@ async function getContent(): Promise<Map<string, (Page|Folder)>> {
     content.set("about", {
         icon: "fas fa-portrait",
         color: GREEN,
-        innerHTML: await getInnerHTML("public/content/about.html") 
+        innerHTML: await getInnerHTML("src/content/about.html") 
     });
     content.set("my-work", {
         subDocs: new Map([
             ["projects", {
                 icon: "fas fa-tools",
                 color: YELLOW,
-                innerHTML: await getInnerHTML("public/content/projects.md") 
+                innerHTML: await getInnerHTML("src/content/projects.html") 
             }]
         ]) 
     });
     content.set("resume", {
         icon: "fas fa-file",
         color: ORANGE,
-        innerHTML: await getInnerHTML("public/content/resume.md") 
+        innerHTML: await getInnerHTML("src/content/resume.html") 
     });
     return content;
 }
