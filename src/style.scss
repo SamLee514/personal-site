@@ -80,10 +80,9 @@ button {
     cursor: pointer;
     border-top-left-radius: $squircliness;
     border-bottom-left-radius: $squircliness;
-    transition: flippity 0.4s;
-    transition: all 0.4s ease-in;
+    transition: all 0.1s ease-in;
     * {
-        transition: all 0.4s ease-in-out;
+        transition: all 0.1s ease-in;
     }
 }
 
@@ -123,7 +122,7 @@ button {
 }
 
 .folder-contents {
-    transition: max-height 0.2s ease-in-out;
+    transition: max-height 0.2s ease-in;
     * {
         padding-left: 1em;
     }
@@ -181,7 +180,7 @@ button {
     box-shadow: 8px 8px 8px rgb(0 0 0 / 0.7);
     background-color: $light-gray;
     position: relative;
-    transition: all 0.4s ease-in;
+    transition: all 0.3s ease-in;
  }
 
 #editor-content {
@@ -261,7 +260,8 @@ button {
 
     #editor.wide {
         margin-left: -30vw;
-        padding: 0 0 0 14vw; 
+        padding: 0 0 0 14vw;
+        width: 86vw;
     }
 
     #tabs {
