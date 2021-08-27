@@ -29,11 +29,16 @@ async function getContent(): Promise<Map<string, (Page|Folder)>> {
                 icon: "fas fa-tools",
                 color: YELLOW,
                 innerHTML: await getInnerHTML("content/projects.html") 
+            }],
+            ["experience", {
+                icon: "fas fa-globe-americas",
+                color: BLUE,
+                innerHTML: await getInnerHTML("content/experience.html")
             }]
         ]) 
     });
     content.set("resume", {
-        icon: "fas fa-file",
+        icon: "fas fa-print",
         color: ORANGE,
         innerHTML: await getInnerHTML("content/resume.html") 
     });

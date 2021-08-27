@@ -1,15 +1,17 @@
-$dark-gray:#2E3440;
-$medium-gray: #3B4252;
-$light-gray: #434C5E;
-$bright-gray: #4C566A;
-$white-text:#ECEFF4;
-$damp: #D8DEE9;
-$blue: #5E81AC;
-$red: #BF616A;
-$orange: #D08770;
-$yellow: #EBCB8B;
-$green: #A3BE8C;
-$pink: #B48EAD;
+// $dark-gray:#2E3440;
+// $medium-gray: #3B4252;
+// $light-gray: #434C5E;
+// $bright-gray: #4C566A;
+// $white-text:#ECEFF4;
+// $damp: #D8DEE9;
+// $blue: #5E81AC;
+// $red: #BF616A;
+// $orange: #D08770;
+// $yellow: #EBCB8B;
+// $green: #A3BE8C;
+// $pink: #B48EAD;
+
+@use "main";
 
 #about-page {
     display: flex;
@@ -20,7 +22,7 @@ $pink: #B48EAD;
 }
 
 hr {
-    background-color:$blue;
+    background-color:main.$blue;
 }
 
 .image-with-label {
@@ -30,11 +32,11 @@ hr {
     width: 204px;
     img {
         border-radius: 4%;
-        border: solid $damp 2px;
+        border: solid main.$damp 2px;
     }
     * {
         font-size: 12px;
-        color: $damp;
+        color: main.$damp;
         width: 200px;
     }
 }
