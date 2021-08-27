@@ -85,7 +85,7 @@ function openPage(name: string, item: Page) {
     }
     const editor = document.getElementById("editor-content")! 
     editor.innerHTML = item.innerHTML;
-    editor.classList.remove("inactive");
+    (editor as HTMLElement).parentElement!.classList.remove("inactive");
     makeExclusivelyActive(name);
 }
 
@@ -159,7 +159,6 @@ async function main() {
         } else if ((e.target! as HTMLElement).parentElement!.tagName === "BUTTON") {
             element = (e.target! as HTMLElement).parentElement!;
             if ((e.target! as HTMLElement).classList.contains("close-button")) {
-                console.log("HERE!", element, document.getElementById("tabs")!.innerHTML)
                 if (element.nextElementSibling) {
                     const name = (element.nextElementSibling as HTMLElement).getAttribute("name")!;
                     openPage(name, (deepAccess(content, name.split('/'))! as Page));
@@ -170,7 +169,9 @@ async function main() {
                     document.getElementById(`${currentlyActiveItemName}-explorer`)!.classList.remove("active");
                     const editor = document.getElementById("editor-content")!;
                     editor.innerHTML = `<i class="fas fa-smile-wink fa-10x" style="color:${GREY};"></i>`;
-                    editor.classList.add("inactive");
+                    (editor as HTMLElement).parentElement!.classList.add("inactive");
+                    (editor as HTMLElement).parentElement!.classList.remove("wide");
+                    document.getElementById("drawer-button")!.classList.remove("closed");
                 }
                 (e.target! as HTMLElement).parentElement!.remove();
                 return;
@@ -194,55 +195,3 @@ async function main() {
 }
 
 main();
-// (await getContent()).forEach(page => {
-//     explorer.innerHTML = page.innerHTML;
-//     console.log("hey")
-// })
-
-
-// const container: HTMLElement | any = document.getElementById("app");
-// const pokemons: number = 100;
-
-// interface IPokemon {
-//   id: number;
-//   name: string;
-//   image: string;
-//   type: string;
-// }
-
-// const fetchData = (): void => {
-//   for (let i = 1; i <= pokemons; i++) {
-//     getPokemon(i);
-//   }
-// };
-
-// const getPokemon = async (id: number): Promise<void> => {
-//   const data: Response = await fetch(`https://pokeapi.co/api/v2/pokemon/${id}`);
-//   const pokemon: any = await data.json();
-//   const pokemonType: string = pokemon.types
-//     .map((poke: any) => poke.type.name)
-//     .join(", ");
-
-//   const transformedPokemon = {
-//     id: pokemon.id,
-//     name: pokemon.name,
-//     image: `${pokemon.sprites.front_default}`,
-//     type: pokemonType
-//   };
-
-//   showPokemon(transformedPokemon);
-// };
-
-// const showPokemon = (pokemon: IPokemon): void => {
-//   let output: string = `
-//         <div class="card">
-//             <span class="card--id">#${pokemon.id}</span>
-//             <img class="card--image" src=${pokemon.image} alt=${pokemon.name} />
-//             <h1 class="card--name">${pokemon.name}</h1>
-//             <span class="card--details">${pokemon.type}</span>
-//         </div>
-//     `;
-//   container.innerHTML += output;
-// };
-
-// fetchData();

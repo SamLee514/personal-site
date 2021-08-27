@@ -201,11 +201,16 @@ button {
 
 #editor.inactive {
     background-color: $dark-gray;
-    display: flex;
-    justify-content: center;
-    align-items: center; 
-    align-self: center;
     box-shadow: none;
+    #editor-content {
+        display: flex;
+        justify-content: center;
+        align-items: center; 
+        align-self: center;
+    }
+    #drawer-button {
+        display: none;
+    }
 }
 
 #footer {
