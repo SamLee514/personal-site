@@ -1,0 +1,77 @@
+@use "main";
+
+.work-card {
+    background-color: main.$medium-gray;
+    padding: 20px;
+    border-radius: main.$squircliness;
+    position: relative;
+    margin: 8px 16px 8px 16px;
+    transition: all 0.1s;
+    span.card-header {
+        width: 100%;
+        text-align: center;
+    }
+    div {
+        display: flex;
+        align-items: flex-start;
+        margin-bottom: 24px;
+    }
+    p {
+        margin-left: 20px;
+        margin-top: 0px;
+    }
+    img {
+        border-radius: main.$squircliness;
+    }
+    span.card-footer {
+        width: 100%;
+        display: flex;
+        justify-content: flex-end;
+        a {
+            text-decoration: none;
+            padding: 5px 10px 5px 10px;
+            color: main.$white-text;
+            border-radius: main.$squircliness;
+            margin-left: 20px;
+            transition: all 0.1s ease-out;
+        }
+        a:hover {
+            transform: scale(1.1);
+        }
+        a.source-button {
+            background-color: main.$green;
+        }
+        a.view-button {
+            background-color: main.$aqua; 
+        }
+    }
+}
+
+@media only screen and (min-device-width: 320px) and (max-device-width: 480px) {
+    .work-card {
+        img {
+            width: 100%;
+        }
+        div {
+            flex-wrap: wrap;
+        }
+        p {
+            margin-top: 10px;
+            margin-left: 0;
+        }
+        span.card-footer {
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            a {
+                margin: 0px;
+                margin-bottom: 20px;
+            }
+        }
+    }
+}
+
+// .work-card:hover {
+//     box-shadow: 6px 6px 6px rgb(0 0 0 / 0.7);
+//     transform: scale(1.005);
+// }
