@@ -20,7 +20,7 @@ async function getContent(): Promise<Map<string, (Page|Folder)>> {
     const content = new Map();
     content.set("about", {
         icon: "fas fa-portrait",
-        color: GREEN,
+        color: PINK,
         innerHTML: await getInnerHTML("content/about.html") 
     });
     content.set("my-work", {
@@ -32,7 +32,7 @@ async function getContent(): Promise<Map<string, (Page|Folder)>> {
             }],
             ["experience", {
                 icon: "fas fa-globe-americas",
-                color: BLUE,
+                color: GREEN,
                 innerHTML: await getInnerHTML("content/experience.html")
             }]
         ]) 
