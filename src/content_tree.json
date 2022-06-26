@@ -1,0 +1,11 @@
+{
+  "about": "content/about.html",
+  "blog": {
+    "post": "content/blog/post.md"
+  },
+  "my_work": {
+    "experience": "content/my_work/experience.html",
+    "projects": "content/my_work/projects.html"
+  },
+  "resume": "content/resume.html"
+}
