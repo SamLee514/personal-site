@@ -17,4 +17,4 @@ function traverseDir(dir, tree) {
 
 const tree = {};
 traverseDir("content", tree);
-fs.writeFileSync("../public/content_tree.json", JSON.stringify(tree, null, 2));
+fs.writeFileSync("content_tree.json", JSON.stringify(tree, null, 2));
