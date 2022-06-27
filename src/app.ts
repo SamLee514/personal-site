@@ -1,12 +1,13 @@
-// color
-const BLUE = "#5E81AC";
-const RED = "BF616A";
-const ORANGE = "";
-const YELLOW = "#EBCB8B";
-const GREEN = "#A3BE8C";
-const PINK = "#B48EAD";
-const DAMP = "#D8DEE9";
-const GREY = "#4C566A";
+const COLORS: { [key: string]: string } = {
+  BLUE: "#5E81AC",
+  RED: "BF616A",
+  ORANGE: "#D08770",
+  YELLOW: "#EBCB8B",
+  GREEN: "#A3BE8C",
+  PINK: "#B48EAD",
+  DAMP: "#D8DEE9",
+  GREY: "#4C566A",
+};
 
 const parser = new DOMParser();
 
@@ -15,15 +16,29 @@ function isPage(item: Page | Folder): item is Page {
 }
 
 async function getFileContentAndTabInfo(url: string) {
-  const text = await (await fetch(url)).text();
-  const parsed = parser.parseFromString(text, "text/html");
-  const parsedColor = parsed.head?.getAttribute("color");
-  const parsedIcon = parsed.head?.getAttribute("icon");
-  return {
-    color: parsedColor ? parsedColor : "#000000",
-    icon: parsedIcon ? parsedIcon : "fas fa-file",
-    innerHTML: parsed.body.innerHTML,
-  };
+  let color: string, icon: string, innerHTML: string;
+  if (url.endsWith(".md")) {
+    // Preset icon and color based on ascii value of first character of file name
+    color = COLORS[Object.keys(COLORS)[url.split("/")[1].charCodeAt(0) % 7]]; // isolate file name
+    icon = "fas fa-file-alt";
+    innerHTML = `
+    <zero-md src="${url}">
+      <template>
+        <link rel="stylesheet" href="style.css" />
+      </template>
+    </zero-md>
+    `;
+  } else {
+    const text = await (await fetch(url)).text();
+    const parsed = parser.parseFromString(text, "text/html");
+    const parsedColor = parsed.head?.getAttribute("color");
+    const parsedIcon = parsed.head?.getAttribute("icon");
+    color =
+      parsedColor && parsedColor in COLORS ? COLORS[parsedColor] : "#000000";
+    icon = parsedIcon || "fas fa-file";
+    innerHTML = parsed.body?.innerHTML || "";
+  }
+  return { color, icon, innerHTML };
 }
 
 // Helper for getContent. Recursively builds the content map using the provided content tree
@@ -44,49 +59,10 @@ async function getContentFromTree(
 }
 
 async function getContent(): Promise<any> {
-  //Promise<Map<string, Page | Folder>> {
-  // const content =
   const contentTree = await (await fetch("content_tree.json")).json();
   const content = new Map<string, Page | Folder>();
   await getContentFromTree(contentTree, content);
   return content;
-  // console.log("content!:", content);
-  // const content = new Map();
-  // content.set("about", {
-  //   icon: "fas fa-portrait",
-  //   color: PINK,
-  //   innerHTML: await getInnerHTML("content/about.html"),
-  // });
-  // content.set("my-work", {});
-  //   content.set("my-work", {
-  //     subDocs: new Map([
-  //       [
-  //         "projects",
-  //         {
-  //           icon: "fas fa-tools",
-  //           color: YELLOW,
-  //           innerHTML: await getInnerHTML("content/projects.html"),
-  //         },
-  //       ],
-  //       [
-  //         "experience",
-  //         {
-  //           icon: "fas fa-globe-americas",
-  //           color: GREEN,
-  //           innerHTML: await getInnerHTML("content/experience.html"),
-  //         },
-  //       ],
-  //     ]),
-  //   });
-  // content.set("blog", {
-  //   subDocs: new Map([]),
-  // });
-  // content.set("resume", {
-  //   icon: "fas fa-print",
-  //   color: ORANGE,
-  //   innerHTML: await getInnerHTML("content/resume.html"),
-  // });
-  // return content;
 }
 
 const startingItemIndex = 0;
@@ -158,11 +134,11 @@ async function createExplorerButtons(
                 </button>
             `;
     } else {
-      const iconId = `${name}-icon`;
-      const accordionId = `${name}-accordion`;
+      const iconId = `${processedName}-icon`;
+      const accordionId = `${processedName}-accordion`;
       container.innerHTML += `
                 <button id="${buttonId}" name="${processedName}">
-                    <i id="${iconId}" class="fas fa-chevron-right" style="color:${DAMP}; width:1em"></i>
+                    <i id="${iconId}" class="fas fa-chevron-right" style="color:${COLORS.DAMP}; width:1em"></i>
                     ${name}
                 </button>
                 <div id="${accordionId}" class="folder-contents" style="max-height:0px;overflow:hidden;"></div>
@@ -192,7 +168,6 @@ function deepAccess(
 
 async function main() {
   const content = await getContent();
-  console.log("content!:", content);
   createExplorerButtons(document.getElementById("explorer")!, content, null);
   currentlyActiveItemName = "about";
   openPage("about", content.get("about") as Page);
@@ -249,7 +224,7 @@ async function main() {
               .getElementById(`${currentlyActiveItemName}-explorer`)!
               .classList.remove("active");
             const editor = document.getElementById("editor-content")!;
-            editor.innerHTML = `<i class="fas fa-smile-wink fa-10x" style="color:${GREY};"></i>`;
+            editor.innerHTML = `<i class="fas fa-smile-wink fa-10x" style="color:${COLORS.GREY};"></i>`;
             (editor as HTMLElement).parentElement!.classList.add("inactive");
             (editor as HTMLElement).parentElement!.classList.remove("wide");
             document
