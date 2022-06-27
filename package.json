@@ -15,7 +15,7 @@
     "typescript": "^4.4.2"
   },
   "scripts": {
-    "build": "yarn generate && tsc && sass src/styles/style.scss:public/style.css && cp -r src/index.html src/assets src/content* public",
+    "build": "yarn generate && tsc && sass src/styles/style.scss:public/style.css && cp -r src/index.html src/assets src/content public",
     "generate": "cd src && node ../scripts/generateContentPaths.mjs"
   }
 }
