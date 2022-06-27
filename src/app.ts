@@ -115,6 +115,7 @@ function openPage(name: string, item: Page) {
   editor.innerHTML = item.innerHTML;
   (editor as HTMLElement).parentElement!.classList.remove("inactive");
   makeExclusivelyActive(name);
+  window.history.replaceState({}, "", "/" + name);
 }
 
 let currentlyActiveItemName: string;
@@ -176,9 +177,8 @@ async function main() {
   let pathName = window.location.pathname.substring(1);
   if (pathName === "") {
     pathName = "about";
-    document.location.href = "/" + pathName;
+    window.history.replaceState({}, "", "/" + pathName);
   }
-  window.history.replaceState;
   currentlyActiveItemName = pathName;
   console.log(currentlyActiveItemName);
   console.log("content", content);
