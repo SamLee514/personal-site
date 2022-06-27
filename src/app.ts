@@ -170,9 +170,15 @@ function deepAccess(
 async function main() {
   const content = await getContent();
   createExplorerButtons(document.getElementById("explorer")!, content, null);
-  currentlyActiveItemName = "about";
-  openPage("about", content.get("about") as Page);
-
+  let pathName = window.location.pathname.substring(1);
+  if (pathName === "") {
+    pathName = "about";
+    document.location.href = "/" + pathName;
+  }
+  // window.history.replaceState
+  currentlyActiveItemName = pathName;
+  console.log(currentlyActiveItemName);
+  openPage(pathName, content.get(pathName) as Page);
   document
     .getElementById("explorer")!
     .addEventListener("click", function (this: HTMLElement, e: MouseEvent) {
