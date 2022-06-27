@@ -85,6 +85,7 @@ function makeExclusivelyActive(name: string) {
   currentlyActiveItemName = name;
 }
 
+// TODO: opening a folder inside another folder should increase max height for the opened parent folder
 function toggleOpenFolder(name: string) {
   const contents = document.getElementById(`${name}-accordion`)!;
   const id = `${name}-icon`;
