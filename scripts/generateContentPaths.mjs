@@ -10,7 +10,7 @@ function traverseDir(dir, tree) {
       tree[name] = {};
       traverseDir(fullPath, tree[name]);
     } else {
-      tree[name] = fullPath;
+      tree[name] = "/" + fullPath;
     }
   });
 }

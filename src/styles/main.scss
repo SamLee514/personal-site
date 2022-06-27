@@ -23,17 +23,17 @@ $squircliness: 6px;
 
 @font-face {
   font-family: "iosevka";
-  src: url("assets/fonts/iosevka-light.woff2");
+  src: url("/assets/fonts/iosevka-regular.woff2");
 }
 
 @font-face {
   font-family: "roboto";
-  src: url("assets/fonts/RobotoSlab-Bold.ttf");
+  src: url("/assets/fonts/RobotoSlab-Bold.ttf");
 }
 
 @font-face {
   font-family: "cormorant";
-  src: url("assets/fonts/Cormorant-Regular.ttf");
+  src: url("/assets/fonts/Cormorant-Regular.ttf");
 }
 
 @mixin theme {

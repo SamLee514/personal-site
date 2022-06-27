@@ -24,7 +24,7 @@ async function getFileContentAndTabInfo(url: string) {
     innerHTML = `
     <zero-md src="${url}">
       <template>
-        <link rel="stylesheet" href="style.css" />
+        <link rel="stylesheet" href="/style.css" />
       </template>
     </zero-md>
     `;
@@ -59,7 +59,7 @@ async function getContentFromTree(
 }
 
 async function getContent(): Promise<any> {
-  const contentTree = await (await fetch("content_tree.json")).json();
+  const contentTree = await (await fetch("/content_tree.json")).json();
   const content = new Map<string, Page | Folder>();
   await getContentFromTree(contentTree, content);
   return content;
@@ -153,33 +153,36 @@ async function createExplorerButtons(
   });
 }
 
-// Given a content map and a set of nested paths, access the deepest item
-// For example, given path "my-work/projects/project-1", keys should be ["my-work", "projects", "project-1"]
-// If content is { "my-work": { "projects": { "project-1": "deepest-item", ... }, ... }, ... },
+// Given a content map and a path, access the deepest item
+// For example, given path "my-work/projects/project-1" and content
+// { "my-work": { "projects": { "project-1": "deepest-item", ... }, ... }, ... },
 // then this function will return "deepest-item"
 function deepAccess(
   content: Map<string, Page | Folder>,
-  keys: string[]
+  path: string
 ): Page | Folder {
+  const keys = path.split("/");
   if (keys.length === 1) {
     return content.get(keys[0])!;
   }
-  return deepAccess(content.get(keys[0])! as Folder, keys.slice(1));
+  return deepAccess(content.get(keys[0])! as Folder, path.split("/", 2)[1]);
 }
 
 async function main() {
   const content = await getContent();
   createExplorerButtons(document.getElementById("explorer")!, content, null);
-  let pathName = "";
-  // window.location.pathname.substring(1);
+  // let pathName = "about";
+  console.log("hey!!!!", window.location.pathname);
+  let pathName = window.location.pathname.substring(1);
   if (pathName === "") {
     pathName = "about";
     document.location.href = "/" + pathName;
   }
-  // window.history.replaceState
+  window.history.replaceState;
   currentlyActiveItemName = pathName;
   console.log(currentlyActiveItemName);
-  openPage(pathName, content.get(pathName) as Page);
+  console.log("content", content);
+  openPage(pathName, deepAccess(content, pathName) as Page);
   document
     .getElementById("explorer")!
     .addEventListener("click", function (this: HTMLElement, e: MouseEvent) {
@@ -196,14 +199,13 @@ async function main() {
         return;
       }
       const name = (element as HTMLElement).getAttribute("name")!;
-      const item = deepAccess(content, name.split("/"))!;
+      const item = deepAccess(content, name)!;
       if (isPage(item)) {
         openPage(name, item);
       } else {
         toggleOpenFolder(name);
       }
     });
-
   document
     .getElementById("tabs")!
     .addEventListener("click", function (this: HTMLElement, e: MouseEvent) {
@@ -221,12 +223,12 @@ async function main() {
             const name = (
               element.nextElementSibling as HTMLElement
             ).getAttribute("name")!;
-            openPage(name, deepAccess(content, name.split("/"))! as Page);
+            openPage(name, deepAccess(content, name)! as Page);
           } else if (element.previousElementSibling) {
             const name = (
               element.previousElementSibling as HTMLElement
             ).getAttribute("name")!;
-            openPage(name, deepAccess(content, name.split("/"))! as Page);
+            openPage(name, deepAccess(content, name)! as Page);
           } else {
             document
               .getElementById(`${currentlyActiveItemName}-explorer`)!
@@ -246,7 +248,7 @@ async function main() {
         return;
       }
       const name = (element as HTMLElement).getAttribute("name")!;
-      const item = deepAccess(content, name.split("/"))!;
+      const item = deepAccess(content, name)!;
       if (isPage(item)) {
         openPage(name, item);
       } else {
