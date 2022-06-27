@@ -1,58 +1,92 @@
 // color
 const BLUE = "#5E81AC";
 const RED = "BF616A";
-const ORANGE = "#D08770";
+const ORANGE = "";
 const YELLOW = "#EBCB8B";
 const GREEN = "#A3BE8C";
 const PINK = "#B48EAD";
 const DAMP = "#D8DEE9";
 const GREY = "#4C566A";
 
+const parser = new DOMParser();
+
 function isPage(item: Page | Folder): item is Page {
   return (item as Page).icon !== undefined;
 }
 
-async function getInnerHTML(url: string) {
-  return await (await fetch(url)).text();
+async function getFileContentAndTabInfo(url: string) {
+  const text = await (await fetch(url)).text();
+  const parsed = parser.parseFromString(text, "text/html");
+  const parsedColor = parsed.head?.getAttribute("color");
+  const parsedIcon = parsed.head?.getAttribute("icon");
+  return {
+    color: parsedColor ? parsedColor : "#000000",
+    icon: parsedIcon ? parsedIcon : "fas fa-file",
+    innerHTML: parsed.body.innerHTML,
+  };
 }
 
-async function getContent(): Promise<Map<string, Page | Folder>> {
-  const content = new Map();
-  content.set("about", {
-    icon: "fas fa-portrait",
-    color: PINK,
-    innerHTML: await getInnerHTML("content/about.html"),
-  });
-  content.set("my-work", {
-    subDocs: new Map([
-      [
-        "projects",
-        {
-          icon: "fas fa-tools",
-          color: YELLOW,
-          innerHTML: await getInnerHTML("content/projects.html"),
-        },
-      ],
-      [
-        "experience",
-        {
-          icon: "fas fa-globe-americas",
-          color: GREEN,
-          innerHTML: await getInnerHTML("content/experience.html"),
-        },
-      ],
-    ]),
-  });
-  //   content.set();
-  content.set("blog", {
-    subDocs: new Map([]),
-  });
-  content.set("resume", {
-    icon: "fas fa-print",
-    color: ORANGE,
-    innerHTML: await getInnerHTML("content/resume.html"),
-  });
+// Helper for getContent. Recursively builds the content map using the provided content tree
+async function getContentFromTree(
+  tree: any,
+  content: Map<string, Page | Folder>
+) {
+  for (const [key, value] of Object.entries(tree)) {
+    if (typeof value === "string") {
+      const page = await getFileContentAndTabInfo(value);
+      content.set(key, page);
+    } else {
+      const folder = new Map();
+      content.set(key, folder);
+      await getContentFromTree(value, folder);
+    }
+  }
+}
+
+async function getContent(): Promise<any> {
+  //Promise<Map<string, Page | Folder>> {
+  // const content =
+  const contentTree = await (await fetch("content_tree.json")).json();
+  const content = new Map<string, Page | Folder>();
+  await getContentFromTree(contentTree, content);
   return content;
+  // console.log("content!:", content);
+  // const content = new Map();
+  // content.set("about", {
+  //   icon: "fas fa-portrait",
+  //   color: PINK,
+  //   innerHTML: await getInnerHTML("content/about.html"),
+  // });
+  // content.set("my-work", {});
+  //   content.set("my-work", {
+  //     subDocs: new Map([
+  //       [
+  //         "projects",
+  //         {
+  //           icon: "fas fa-tools",
+  //           color: YELLOW,
+  //           innerHTML: await getInnerHTML("content/projects.html"),
+  //         },
+  //       ],
+  //       [
+  //         "experience",
+  //         {
+  //           icon: "fas fa-globe-americas",
+  //           color: GREEN,
+  //           innerHTML: await getInnerHTML("content/experience.html"),
+  //         },
+  //       ],
+  //     ]),
+  //   });
+  // content.set("blog", {
+  //   subDocs: new Map([]),
+  // });
+  // content.set("resume", {
+  //   icon: "fas fa-print",
+  //   color: ORANGE,
+  //   innerHTML: await getInnerHTML("content/resume.html"),
+  // });
+  // return content;
 }
 
 const startingItemIndex = 0;
@@ -108,7 +142,7 @@ function openPage(name: string, item: Page) {
 
 let currentlyActiveItemName: string;
 
-async function fillHTML(
+async function createExplorerButtons(
   container: HTMLElement,
   items: Map<string, Page | Folder>,
   keyPrefix: string | null
@@ -133,15 +167,19 @@ async function fillHTML(
                 </button>
                 <div id="${accordionId}" class="folder-contents" style="max-height:0px;overflow:hidden;"></div>
             `;
-      fillHTML(
+      createExplorerButtons(
         document.getElementById(`${accordionId}`)!,
-        item.subDocs,
+        item,
         processedName
       );
     }
   });
 }
 
+// Given a content map and a set of nested paths, access the deepest item
+// For example, given path "my-work/projects/project-1", keys should be ["my-work", "projects", "project-1"]
+// If content is { "my-work": { "projects": { "project-1": "deepest-item", ... }, ... }, ... },
+// then this function will return "deepest-item"
 function deepAccess(
   content: Map<string, Page | Folder>,
   keys: string[]
@@ -149,12 +187,13 @@ function deepAccess(
   if (keys.length === 1) {
     return content.get(keys[0])!;
   }
-  return deepAccess((content.get(keys[0])! as Folder).subDocs, keys.slice(1));
+  return deepAccess(content.get(keys[0])! as Folder, keys.slice(1));
 }
 
 async function main() {
   const content = await getContent();
-  fillHTML(document.getElementById("explorer")!, content, null);
+  console.log("content!:", content);
+  createExplorerButtons(document.getElementById("explorer")!, content, null);
   currentlyActiveItemName = "about";
   openPage("about", content.get("about") as Page);
 
