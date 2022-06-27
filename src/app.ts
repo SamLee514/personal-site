@@ -170,7 +170,8 @@ function deepAccess(
 async function main() {
   const content = await getContent();
   createExplorerButtons(document.getElementById("explorer")!, content, null);
-  let pathName = window.location.pathname.substring(1);
+  let pathName = "";
+  // window.location.pathname.substring(1);
   if (pathName === "") {
     pathName = "about";
     document.location.href = "/" + pathName;
