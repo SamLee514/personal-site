@@ -5,6 +5,7 @@ function traverseDir(dir, tree) {
   fs.readdirSync(dir).forEach((file) => {
     let fullPath = path.join(dir, file);
     const name = path.parse(file).name;
+    if (name in tree) throw new Error(`Duplicate file name: ${name}`);
     if (fs.lstatSync(fullPath).isDirectory()) {
       tree[name] = {};
       traverseDir(fullPath, tree[name]);
