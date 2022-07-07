@@ -1,6 +1,6 @@
 # Startups vs. Big Tech for New Grads
 
-_6/26/2022_
+<strong id="viewsAndDate">views | June 26, 2022</strong>
 
 ---
 
