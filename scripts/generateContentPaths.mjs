@@ -10,11 +10,12 @@ function traverseDir(dir, tree) {
       tree[name] = {};
       traverseDir(fullPath, tree[name]);
     } else {
-      tree[name] = "/" + fullPath;
+      tree[name] = "/" + fullPath.replace(".md", ".html");
     }
   });
 }
 
 const tree = {};
 traverseDir("content", tree);
-fs.writeFileSync("content_tree.json", JSON.stringify(tree, null, 2));
+// Requires the public folder to exist at the same level as src
+fs.writeFileSync("../public/content_tree.json", JSON.stringify(tree, null, 2));
