@@ -58,8 +58,6 @@ async function getContent(): Promise<any> {
   return content;
 }
 
-const startingItemIndex = 0;
-
 function makeExclusivelyActive(name: string) {
   document
     .getElementById(`${currentlyActiveItemName}-explorer`)!
@@ -91,20 +89,27 @@ function toggleOpenFolder(name: string) {
   }
 }
 
+const times = {} as { [key: string]: number };
 function reasonablyUpdateViewCount(namespace: string, key: string) {
   // TODO: might be useful to change this to timer. This is arbitrary and inconsistent.
-  let time = 10000,
-    delta = 1;
-  let timer = setInterval(async function () {
-    console.log("time:", time);
-    if (document.hidden) {
+  const thisItemName = currentlyActiveItemName;
+  if (!times[thisItemName]) times[thisItemName] = 20000;
+  let delta = 1;
+  const timer = setInterval(async function () {
+    times[thisItemName] -= delta;
+    // Pause timer if navigated away from page
+    if (document.hidden) return;
+    // Kill timer and save if navigated away from in-page tab
+    if (currentlyActiveItemName !== thisItemName || times[thisItemName] < 0) {
+      clearInterval(timer);
       return;
     }
-    time -= delta;
-    if (time <= 0) {
-      clearInterval(timer);
-      await countapi.hit(namespace, key);
-      console.log("done");
+    // Update viewcount after 10,000 cycles
+    if (times[thisItemName] === 0) {
+      const { value } = await countapi.hit(namespace, key);
+      console.log(
+        `All right, you've been here long enough. Thanks for being viewer number ${value} of this page!`
+      );
     }
   }, delta);
 }
@@ -135,7 +140,8 @@ async function openPage(name: string, item: Page) {
   const key = name.replaceAll("/", "_");
   const { value: views } = await countapi.get(namespace, key);
   const viewsAndDate = document.getElementById("viewsAndDate");
-  viewsAndDate!.innerHTML = `${views} ${viewsAndDate!.innerHTML}`;
+  if (viewsAndDate)
+    viewsAndDate.innerHTML = `${views} ${viewsAndDate.innerHTML}`;
   reasonablyUpdateViewCount(namespace, key);
 }
 
