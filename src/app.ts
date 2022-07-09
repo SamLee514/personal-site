@@ -93,7 +93,7 @@ const times = {} as { [key: string]: number };
 function reasonablyUpdateViewCount(namespace: string, key: string) {
   // TODO: might be useful to change this to timer. This is arbitrary and inconsistent.
   const thisItemName = currentlyActiveItemName;
-  if (!times[thisItemName]) times[thisItemName] = 20000;
+  if (!times[thisItemName]) times[thisItemName] = 2000;
   let delta = 1;
   const timer = setInterval(async function () {
     times[thisItemName] -= delta;
