@@ -8,7 +8,9 @@
   "license": "MIT",
   "private": false,
   "dependencies": {
-    "countapi-js": "^1.0.2"
+    "countapi-js": "^1.0.2",
+    "webpack": "^5.73.0",
+    "webpack-cli": "^4.10.0"
   },
   "devDependencies": {
     "@types/node": "^18.0.0",
@@ -17,9 +19,7 @@
     "sass": "^1.38.1",
     "ts-loader": "^9.3.1",
     "ts-node": "^10.8.1",
-    "typescript": "^4.4.2",
-    "webpack": "^5.73.0",
-    "webpack-cli": "^4.10.0"
+    "typescript": "^4.4.2"
   },
   "scripts": {
     "dev": "netlify dev",
