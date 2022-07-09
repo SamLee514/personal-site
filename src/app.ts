@@ -91,6 +91,24 @@ function toggleOpenFolder(name: string) {
   }
 }
 
+function reasonablyUpdateViewCount(namespace: string, key: string) {
+  // TODO: might be useful to change this to timer. This is arbitrary and inconsistent.
+  let time = 10000,
+    delta = 1;
+  let timer = setInterval(async function () {
+    console.log("time:", time);
+    if (document.hidden) {
+      return;
+    }
+    time -= delta;
+    if (time <= 0) {
+      clearInterval(timer);
+      await countapi.hit(namespace, key);
+      console.log("done");
+    }
+  }, delta);
+}
+
 async function openPage(name: string, item: Page) {
   const tabId = `${name}-tab`;
   const closeId = `${name}-close`;
@@ -109,19 +127,16 @@ async function openPage(name: string, item: Page) {
   (editor as HTMLElement).parentElement!.classList.remove("inactive");
   makeExclusivelyActive(name);
   window.history.replaceState({}, "", "/" + name);
-  console.log("test!");
-  console.log("process.env.NODE_ENV", process.env.NODE_ENV);
   // Analytics
   const namespace =
     process.env.NODE_ENV === "production"
       ? window.location.hostname
       : "samlee.dev-development";
   const key = name.replaceAll("/", "_");
-  const { value: views } = await countapi.hit(namespace, key);
+  const { value: views } = await countapi.get(namespace, key);
   const viewsAndDate = document.getElementById("viewsAndDate");
-  console.log("viewsAndDate", viewsAndDate);
   viewsAndDate!.innerHTML = `${views} ${viewsAndDate!.innerHTML}`;
-  // console.log(views);
+  reasonablyUpdateViewCount(namespace, key);
 }
 
 let currentlyActiveItemName: string;
