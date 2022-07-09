@@ -109,6 +109,8 @@ async function openPage(name: string, item: Page) {
   (editor as HTMLElement).parentElement!.classList.remove("inactive");
   makeExclusivelyActive(name);
   window.history.replaceState({}, "", "/" + name);
+  console.log("test!");
+  console.log("process.env.NODE_ENV", process.env.NODE_ENV);
   // Analytics
   const namespace =
     process.env.NODE_ENV === "production"
