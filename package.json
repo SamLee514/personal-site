@@ -7,15 +7,24 @@
   "author": "Samuel Lee",
   "license": "MIT",
   "private": false,
-  "dependencies": {},
+  "dependencies": {
+    "countapi-js": "^1.0.2"
+  },
   "devDependencies": {
     "@types/node": "^18.0.0",
+    "marked": "^4.0.17",
+    "netlify-cli": "^10.7.1",
     "sass": "^1.38.1",
+    "ts-loader": "^9.3.1",
     "ts-node": "^10.8.1",
-    "typescript": "^4.4.2"
+    "typescript": "^4.4.2",
+    "webpack": "^5.73.0",
+    "webpack-cli": "^4.10.0"
   },
   "scripts": {
-    "build": "yarn generate && tsc && sass src/styles/style.scss:public/style.css && cp -r src/index.html src/assets src/content _redirects public && mv src/content_tree.json public",
-    "generate": "cd src && node ../scripts/generateContentPaths.mjs"
+    "dev": "netlify dev",
+    "build": "webpack && sass src/styles/style.scss:public/style.css && cp -r src/index.html src/assets src/content _redirects public && yarn generate && rm public/content/blog/*.md",
+    "generate": "cd src && node ../scripts/generateContentPaths.mjs && node ../scripts/parseMarkdown.mjs",
+    "marked": "marked"
   }
 }

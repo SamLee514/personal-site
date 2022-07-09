@@ -1,3 +1,5 @@
+import countapi from "countapi-js";
+
 const COLORS: { [key: string]: string } = {
   BLUE: "#5E81AC",
   RED: "BF616A",
@@ -17,27 +19,18 @@ function isPage(item: Page | Folder): item is Page {
 
 async function getFileContentAndTabInfo(url: string) {
   let color: string, icon: string, innerHTML: string;
-  if (url.endsWith(".md")) {
-    // Preset icon and color based on ascii value of first character of file name
-    color = COLORS[Object.keys(COLORS)[url.split("/")[1].charCodeAt(0) % 7]]; // isolate file name
-    icon = "fas fa-file-alt";
-    innerHTML = `
-    <zero-md src="${url}">
-      <template>
-        <link rel="stylesheet" href="/style.css" />
-      </template>
-    </zero-md>
-    `;
-  } else {
-    const text = await (await fetch(url)).text();
-    const parsed = parser.parseFromString(text, "text/html");
-    const parsedColor = parsed.head?.getAttribute("color");
-    const parsedIcon = parsed.head?.getAttribute("icon");
-    color =
-      parsedColor && parsedColor in COLORS ? COLORS[parsedColor] : "#000000";
-    icon = parsedIcon || "fas fa-file";
-    innerHTML = parsed.body?.innerHTML || "";
-  }
+
+  const text = await (await fetch(url)).text();
+  const parsed = parser.parseFromString(text, "text/html");
+  const parsedColor = parsed.head?.getAttribute("color");
+  const parsedIcon = parsed.head?.getAttribute("icon");
+  color =
+    parsedColor && parsedColor in COLORS
+      ? COLORS[parsedColor]
+      : COLORS[Object.keys(COLORS)[url.split("/")[1].charCodeAt(0) % 7]]; // generate color from file name
+  icon = parsedIcon || "fas fa-file";
+  innerHTML = parsed.body?.innerHTML || "";
+  // }
   return { color, icon, innerHTML };
 }
 
@@ -98,7 +91,7 @@ function toggleOpenFolder(name: string) {
   }
 }
 
-function openPage(name: string, item: Page) {
+async function openPage(name: string, item: Page) {
   const tabId = `${name}-tab`;
   const closeId = `${name}-close`;
   const tab = document.getElementById(tabId);
@@ -116,6 +109,17 @@ function openPage(name: string, item: Page) {
   (editor as HTMLElement).parentElement!.classList.remove("inactive");
   makeExclusivelyActive(name);
   window.history.replaceState({}, "", "/" + name);
+  // Analytics
+  const namespace =
+    process.env.NODE_ENV === "production"
+      ? window.location.hostname
+      : "samlee.dev-development";
+  const key = name.replaceAll("/", "_");
+  const { value: views } = await countapi.hit(namespace, key);
+  const viewsAndDate = document.getElementById("viewsAndDate");
+  console.log("viewsAndDate", viewsAndDate);
+  viewsAndDate!.innerHTML = `${views} ${viewsAndDate!.innerHTML}`;
+  // console.log(views);
 }
 
 let currentlyActiveItemName: string;
@@ -172,7 +176,7 @@ function deepAccess(
 async function main() {
   const content = await getContent();
   createExplorerButtons(document.getElementById("explorer")!, content, null);
-  // currentlyActiveItemName is also the path name of the currently active page
+  // Basic routing; currentlyActiveItemName is also the path name of the currently active page
   currentlyActiveItemName = window.location.pathname.substring(1);
   if (currentlyActiveItemName === "") {
     currentlyActiveItemName = "about";
